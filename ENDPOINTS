@@ -1,0 +1,10 @@
+{
+  "dish": "Chicken Biryani",
+  "estimated_carbon_kg": 4.2,
+  "ingredients": [
+    {"name": "Rice", "carbon_kg": 1.1},
+    {"name": "Chicken", "carbon_kg": 2.5},
+    {"name": "Spices", "carbon_kg": 0.2},
+    {"name": "Oil", "carbon_kg": 0.4}
+  ]
+}
