@@ -1,0 +1,17 @@
+carbon-estimator/
+ ├── src/
+ │   ├── index.ts          # Entry point
+ │   ├── routes/
+ │   │    ├── estimate.ts  # /estimate route
+ │   │    └── image.ts     # /estimate/image route
+ │   ├── services/
+ │   │    ├── llmService.ts    # Mock or real OpenAI GPT
+ │   │    ├── visionService.ts # Mock or real Vision AI
+ │   │    └── carbonService.ts # Calculate footprint
+ │   ├── data/
+ │   │    └── carbonValues.json
+ │   └── utils/
+ │        └── fileUpload.ts
+ ├── package.json
+ ├── Dockerfile
+ ├── README.md
