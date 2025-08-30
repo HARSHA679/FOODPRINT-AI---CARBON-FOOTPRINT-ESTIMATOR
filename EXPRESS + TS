@@ -1,0 +1,67 @@
+import express from "express";
+import multer from "multer";
+import carbonValues from "./data/carbonValues.json";
+
+const app = express();
+app.use(express.json());
+
+const upload = multer({ dest: "uploads/" });
+
+// Mock LLM inference for ingredients
+function getIngredientsFromDish(dish: string): string[] {
+  const mapping: Record<string, string[]> = {
+    "chicken biryani": ["Rice", "Chicken", "Spices", "Oil"],
+    "veg curry": ["Vegetables", "Spices", "Oil"]
+  };
+  return mapping[dish.toLowerCase()] || ["Unknown"];
+}
+
+// Mock Vision inference
+function getIngredientsFromImage(filename: string): string[] {
+  return ["Rice", "Vegetables", "Oil"]; // Mocked
+}
+
+// Carbon calculator
+function calculateCarbon(ingredients: string[]) {
+  let breakdown: any[] = [];
+  let total = 0;
+
+  ingredients.forEach((ing) => {
+    const carbon = carbonValues[ing] || 0.5; // default mock
+    breakdown.push({ name: ing, carbon_kg: carbon });
+    total += carbon;
+  });
+
+  return { total, breakdown };
+}
+
+// POST /estimate
+app.post("/estimate", (req, res) => {
+  const { dish } = req.body;
+  if (!dish) return res.status(400).json({ error: "Dish name required" });
+
+  const ingredients = getIngredientsFromDish(dish);
+  const result = calculateCarbon(ingredients);
+
+  res.json({
+    dish,
+    estimated_carbon_kg: result.total,
+    ingredients: result.breakdown
+  });
+});
+
+// POST /estimate/image
+app.post("/estimate/image", upload.single("file"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "Image required" });
+
+  const ingredients = getIngredientsFromImage(req.file.path);
+  const result = calculateCarbon(ingredients);
+
+  res.json({
+    dish: "Detected Dish",
+    estimated_carbon_kg: result.total,
+    ingredients: result.breakdown
+  });
+});
+
+app.listen(3000, () => console.log("Server running on port 3000"));
